@@ -1,31 +1,14 @@
 import { useEffect, useState } from "react";
-
-type SeatStatus = "Available" | "Booked" | "Selected";
-type SeatMap = Record<string, SeatStatus[]>;
-
-function generateSeatMap(): SeatMap {
-  const seatMap: SeatMap = {};
-  const rows = ["A", "B", "C", "D", "E", "F", "G", "H"];
-  const longRows = ["B", "E", "G"];
-
-  for (let i = 0; i < rows.length; i++) {
-    const seatCount = longRows.includes(rows[i]) ? 14 : 12;
-
-    const seats: SeatStatus[] = Array.from(
-      { length: seatCount },
-      () => "Available"
-    );
-    seatMap[rows[i]] = seats;
-  }
-
-  return seatMap;
-}
+import { bookSeats, generateSeatMap, selectSeat } from "~/helperFunctions";
+import type { BookingList, SeatMap } from "~/types";
 
 export default function BookingStart() {
   const [seatMap, setSeatMap] = useState<SeatMap>();
+  const [bookingList, setBookingList] = useState<BookingList>();
 
   useEffect(() => {
     const savedSeatMap = localStorage.getItem("seatMap");
+    const savedBookingList = localStorage.getItem("bookingList");
     if (savedSeatMap) {
       setSeatMap(JSON.parse(savedSeatMap));
     } else {
@@ -33,29 +16,9 @@ export default function BookingStart() {
       localStorage.setItem("seatMap", JSON.stringify(newSeatMap));
       setSeatMap(newSeatMap);
     }
+    if (!savedBookingList) return;
+    setBookingList(JSON.parse(savedBookingList));
   }, []);
-
-  function selectSeat(row: string, seatIdx: number) {
-    if (!seatMap) return;
-
-    const updatedSeatMap = structuredClone(seatMap);
-    if (updatedSeatMap[row][seatIdx] === "Selected") {
-      updatedSeatMap[row][seatIdx] = "Available";
-    } else {
-      for (const row in updatedSeatMap) {
-        updatedSeatMap[row] = updatedSeatMap[row].map((status) =>
-          status === "Selected" ? "Available" : status
-        );
-      }
-
-      if (updatedSeatMap[row][seatIdx] === "Available") {
-        updatedSeatMap[row][seatIdx] = "Selected";
-      }
-    }
-
-    setSeatMap(updatedSeatMap);
-    localStorage.setItem("seatMap", JSON.stringify(updatedSeatMap));
-  }
 
   return (
     <>
@@ -71,7 +34,10 @@ export default function BookingStart() {
                 <button
                   key={index}
                   disabled={status === "Booked"}
-                  onClick={() => selectSeat(row, index)}
+                  onClick={() => {
+                    const updatedSeatMap = selectSeat(row, index);
+                    if (updatedSeatMap) setSeatMap(updatedSeatMap);
+                  }}
                   className={`
                     size-8 rounded-b-lg
                     ${
@@ -92,6 +58,32 @@ export default function BookingStart() {
             </div>
           </div>
         ))}
+        <form
+          onSubmit={(e) => {
+            const updatedSeatMap = bookSeats(
+              e,
+              (e.target as HTMLFormElement).bookingName.value || ""
+            );
+            if (updatedSeatMap) {
+              setSeatMap(updatedSeatMap.updatedSeatMap);
+              setBookingList(updatedSeatMap.bookingList);
+            }
+          }}
+          className="flex flex-col gap-2"
+        >
+          <input
+            type="text"
+            placeholder="Name"
+            name="bookingName"
+            className="border border-gray-400 p-2 rounded-lg"
+          />
+          <button
+            className="bg-blue-400 w-full font-bold text-xl text-white p-2 rounded-lg hover:bg-blue-300"
+            type="submit"
+          >
+            Book Seats
+          </button>
+        </form>
       </main>
     </>
   );

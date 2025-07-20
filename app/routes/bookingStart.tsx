@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { bookSeats, generateSeatMap, selectSeat } from "~/helperFunctions";
+import {
+  bookSeats,
+  generateSeatMap,
+  getSeatClass,
+  selectSeat,
+} from "~/helperFunctions";
 import type { BookingList, SeatMap } from "~/types";
 
 export default function BookingStart() {
@@ -7,6 +12,8 @@ export default function BookingStart() {
   const [bookingList, setBookingList] = useState<BookingList>();
   const [bookingName, setBookingName] = useState("");
   const [seatAmount, setSeatAmount] = useState(1);
+  const [hoveredRow, setHovoredRow] = useState<string | null>(null);
+  const [hoveredSeat, setHovoredSeat] = useState<number | null>(null);
 
   useEffect(() => {
     const savedSeatMap = localStorage.getItem("seatMap");
@@ -41,22 +48,22 @@ export default function BookingStart() {
                       const updatedSeatMap = selectSeat(row, index);
                       if (updatedSeatMap) setSeatMap(updatedSeatMap);
                     }}
-                    className={`
-                      size-3
-                    md:size-8 rounded-b-lg
-                    ${
-                      status === "Available"
-                        ? "bg-green-500 hover:bg-green-400"
-                        : ""
-                    }
-                    ${
-                      status === "Selected"
-                        ? "bg-blue-500 hover:bg-blue-400"
-                        : ""
-                    }
-                    ${
-                      status === "Booked" ? "bg-red-600 cursor-not-allowed" : ""
-                    }`}
+                    onMouseEnter={() => {
+                      setHovoredRow(row);
+                      setHovoredSeat(index);
+                    }}
+                    onMouseLeave={() => {
+                      setHovoredRow(null);
+                      setHovoredSeat(null);
+                    }}
+                    className={getSeatClass(
+                      status,
+                      row,
+                      index,
+                      seatAmount,
+                      hoveredRow,
+                      hoveredSeat
+                    )}
                   ></button>
                 ))}
               </div>

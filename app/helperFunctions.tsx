@@ -92,3 +92,27 @@ export function generateSeatMap(): SeatMap {
 
   return seatMap;
 }
+
+export function getSeatClass(
+  status: SeatStatus,
+  row: string,
+  index: number,
+  seatAmount: number,
+  hoveredRow: string | null,
+  hoveredSeat: number | null
+): string {
+  const baseClass = "size-3 md:size-8 rounded-b-lg";
+
+  const hoverSeat =
+    row === hoveredRow &&
+    hoveredSeat !== null &&
+    index >= hoveredSeat &&
+    index < hoveredSeat + seatAmount;
+
+  if (status === "Booked") return `${baseClass} bg-red-600 cursor-not-allowed`;
+  if (status === "Selected")
+    return `${baseClass} bg-blue-500 border-2 border-gray-400`;
+  if (hoverSeat) return `${baseClass} bg-green-400 border-2 border-gray-400`;
+
+  return `${baseClass} bg-green-500`;
+}

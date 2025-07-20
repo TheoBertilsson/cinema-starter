@@ -22,11 +22,11 @@ export default function BookingStart() {
 
   return (
     <>
-      <header className="mt-12 text-center">
-        <h1 className="text-3xl mb-2">Welcome to the cinema!</h1>
+      <header className="mt-12 text-center mb-5">
+        <h1 className="text-xl md:text-3xl mb-3">Welcome to the cinema!</h1>
         <p>This is where your implementation will start.</p>
       </header>
-      <main className="flex w-full flex-col items-center justify-center gap-4 m-5">
+      <main className="flex w-full flex-col items-center justify-center gap-4 md:m-5 mb-5">
         <article className="flex w-full flex-col items-center justify-center gap-4">
           {Object.entries(seatMap ? seatMap : []).map(([row, rowSeats]) => (
             <div key={row}>
@@ -40,7 +40,8 @@ export default function BookingStart() {
                       if (updatedSeatMap) setSeatMap(updatedSeatMap);
                     }}
                     className={`
-                    size-8 rounded-b-lg
+                      size-3
+                    md:size-8 rounded-b-lg
                     ${
                       status === "Available"
                         ? "bg-green-500 hover:bg-green-400"
@@ -68,6 +69,7 @@ export default function BookingStart() {
               if (updatedSeatMap) {
                 setSeatMap(updatedSeatMap.updatedSeatMap);
                 setBookingList(updatedSeatMap.bookingList);
+                window.location.reload();
               }
             }}
             className="flex flex-col gap-2"
@@ -86,10 +88,10 @@ export default function BookingStart() {
             </button>
           </form>
         </article>
-        <section className="flex p-5 border-2 rounded-lg border-gray-500 gap-4 max-w-[37.5rem]  overflow-x-scroll">
+        <section className="flex flex-col md:flex-row p-5 border-2 rounded-lg border-gray-500 gap-4 max-w-[37.5rem]  overflow-y-scroll md:overflow-x-scroll">
           {bookingList?.map((booking, index) => (
             <div
-              className=" flex flex-col gap-2 border-r border-gray-600 p-5 min-w-[14rem] min-h-[7rem]"
+              className=" flex flex-col gap-2 border-b md:border-r md:border-b-0 border-gray-600 p-5 min-w-[14rem] min-h-[7rem]"
               key={index}
             >
               <p>Name:{booking.name}</p>

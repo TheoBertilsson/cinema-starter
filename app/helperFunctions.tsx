@@ -40,7 +40,7 @@ export function bookSeats(event: FormEvent, name: string) {
   let amountOfSeats = 0;
 
   if (!name) {
-    alert("Input name");
+    alert("Name is needed to book");
     return;
   }
 

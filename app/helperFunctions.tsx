@@ -1,7 +1,7 @@
 import type { FormEvent } from "react";
 import type { BookingList, SeatMap, SeatStatus } from "./types";
 
-export function selectSeat(row: string, seatIdx: number) {
+export function selectSeat(row: string, seatIdx: number, seatAmount: number) {
   const seatMap: SeatMap = JSON.parse(localStorage.getItem("seatMap") || "");
   if (!seatMap) return;
   if (seatMap[row][seatIdx] === "Booked") {
@@ -9,19 +9,35 @@ export function selectSeat(row: string, seatIdx: number) {
     return;
   }
   const updatedSeatMap = structuredClone(seatMap);
+
   if (updatedSeatMap[row][seatIdx] === "Selected") {
     updatedSeatMap[row][seatIdx] = "Available";
-  } else {
-    for (const row in updatedSeatMap) {
-      updatedSeatMap[row] = updatedSeatMap[row].map((status) =>
-        status === "Selected" ? "Available" : status
-      );
-    }
-
-    if (updatedSeatMap[row][seatIdx] === "Available") {
-      updatedSeatMap[row][seatIdx] = "Selected";
-    }
+    localStorage.setItem("seatMap", JSON.stringify(updatedSeatMap));
+    return updatedSeatMap;
   }
+
+  for (const r in updatedSeatMap) {
+    updatedSeatMap[r] = updatedSeatMap[r].map((status) =>
+      status === "Selected" ? "Available" : status
+    );
+  }
+
+  if (seatIdx + seatAmount > updatedSeatMap[row].length) {
+    alert("Not enough seats to the right!");
+    return;
+  }
+
+  const group = updatedSeatMap[row].slice(seatIdx, seatIdx + seatAmount);
+  const hasBooked = group.some((status) => status === "Booked");
+  if (hasBooked) {
+    alert("One or more seats in the group are already booked!");
+    return;
+  }
+
+  for (let i = 0; i < seatAmount; i++) {
+    updatedSeatMap[row][seatIdx + i] = "Selected";
+  }
+
   localStorage.setItem("seatMap", JSON.stringify(updatedSeatMap));
   return updatedSeatMap;
 }
@@ -60,7 +76,6 @@ export function bookSeats(event: FormEvent, name: string) {
       if (status === "Selected") {
         bookedSeat.push(row + (index + 1));
         amountOfSeats++;
-        console.log(bookedSeat, amountOfSeats);
         return "Booked";
       } else return status;
     });
@@ -68,7 +83,7 @@ export function bookSeats(event: FormEvent, name: string) {
   bookingList.push({
     name: name,
     seatAmount: amountOfSeats,
-    seatNumber: bookedSeat,
+    seatNumber: bookedSeat.map((seat) => seat + ", "),
   });
   localStorage.setItem("bookingList", JSON.stringify(bookingList));
   localStorage.setItem("seatMap", JSON.stringify(updatedSeatMap));

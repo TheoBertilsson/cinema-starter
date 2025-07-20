@@ -45,7 +45,7 @@ export default function BookingStart() {
                     key={index}
                     disabled={status === "Booked"}
                     onClick={() => {
-                      const updatedSeatMap = selectSeat(row, index);
+                      const updatedSeatMap = selectSeat(row, index, seatAmount);
                       if (updatedSeatMap) setSeatMap(updatedSeatMap);
                     }}
                     onMouseEnter={() => {

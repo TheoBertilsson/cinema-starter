@@ -18,8 +18,10 @@ export default function Dialog({
         <button
           className="py-2 px-5 bg-blue-400 hover:bg-blue-300 text-white rounded-lg cursor-pointer"
           onClick={() => {
-            setBookingName("");
-            setSeatAmount(1);
+            if (message === "Booking successful!") {
+              setBookingName("");
+              setSeatAmount(1);
+            }
             setMessage("");
           }}
         >

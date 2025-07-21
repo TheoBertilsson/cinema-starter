@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import Dialog from "~/components/dialog";
-import {
-  bookSeats,
-  generateSeatMap,
-  getSeatClass,
-  selectSeat,
-} from "~/helperFunctions";
+import { bookSeats, generateSeatMap, getSeatClass, selectSeat } from "~/utils";
 import type { BookingList, SeatMap } from "~/types";
 
 export default function BookingStart() {

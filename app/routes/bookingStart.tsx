@@ -16,7 +16,11 @@ export default function BookingStart() {
   const [hoveredRow, setHovoredRow] = useState<string | null>(null);
   const [hoveredSeat, setHovoredSeat] = useState<number | null>(null);
   const [message, setMessage] = useState("");
-  const ticketPrice = 200;
+  const ticketPrice =
+    200 *
+    Object.values(seatMap || []).reduce((total, row) => {
+      return total + row.filter((status) => status === "Selected").length;
+    }, 0);
 
   useEffect(() => {
     const savedSeatMap = localStorage.getItem("seatMap");
@@ -134,9 +138,7 @@ export default function BookingStart() {
               </button>
             </form>
             <div className="min-w-1/4 flex justify-center items-center">
-              <p className=" text-lg font-bold">
-                {ticketPrice * seatAmount} SEK
-              </p>
+              <p className=" text-lg font-bold">{ticketPrice} SEK</p>
             </div>
           </div>
         </article>
@@ -154,7 +156,14 @@ export default function BookingStart() {
             ))}
           </section>
         )}
-        {message && <Dialog message={message} setMessage={setMessage} />}
+        {message && (
+          <Dialog
+            message={message}
+            setMessage={setMessage}
+            setBookingName={setBookingName}
+            setSeatAmount={setSeatAmount}
+          />
+        )}
       </main>
     </>
   );

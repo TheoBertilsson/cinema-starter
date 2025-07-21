@@ -126,7 +126,7 @@ export default function BookingStart() {
                 className="border border-gray-400 p-2 rounded-lg"
               />
               <button
-                className="bg-blue-400 w-full font-bold text-xl text-white p-2 rounded-lg hover:bg-blue-300 cursor-pointer"
+                className="bg-blue-400 w-full font-bold text-xl text-white p-2 rounded-lg hover:bg-blue-300 cursor-pointer drop-shadow-sm drop-shadow-gray-500 active:drop-shadow-none"
                 type="submit"
               >
                 Book Seats

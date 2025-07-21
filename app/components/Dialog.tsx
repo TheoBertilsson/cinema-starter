@@ -16,7 +16,7 @@ export default function Dialog({
           {message}
         </p>
         <button
-          className="py-2 px-5 bg-blue-400 hover:bg-blue-300 text-white rounded-lg cursor-pointer"
+          className="py-2 px-5 bg-blue-400 hover:bg-blue-300 text-white rounded-lg cursor-pointer drop-shadow-sm drop-shadow-gray-500 active:drop-shadow-none"
           onClick={() => {
             if (message === "Booking successful!") {
               setBookingName("");

@@ -72,12 +72,14 @@ export default function BookingStart() {
           <div className="flex gap-4 md:flex-row justify-evenly w-full flex-col p-4">
             <div className="min-w-1/4 hidden md:block"></div>
             <form
-              onSubmit={(e) => {
-                const updatedSeatMap = bookSeats(e, bookingName);
-                if (updatedSeatMap) {
-                  setSeatMap(updatedSeatMap.updatedSeatMap);
-                  setBookingList(updatedSeatMap.bookingList);
-                  setBookingName("");
+              onSubmit={async (e) => {
+                try {
+                  const result = await bookSeats(e, bookingName);
+                  setSeatMap(result.updatedSeatMap);
+                  setBookingList(result.bookingList);
+                  alert("Booking successful!");
+                } catch (error: any) {
+                  alert(error.message);
                 }
               }}
               className="flex flex-col gap-2 md:min-w-1/4"

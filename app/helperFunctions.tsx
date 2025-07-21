@@ -46,52 +46,60 @@ export function selectSeat(row: string, seatIdx: number, seatAmount: number) {
   return updatedSeatMap;
 }
 
-export function bookSeats(event: FormEvent, name: string) {
+export async function bookSeats(
+  event: FormEvent,
+  name: string
+): Promise<{ updatedSeatMap: SeatMap; bookingList: BookingList }> {
   event.preventDefault();
-  const seatMap: SeatMap = JSON.parse(localStorage.getItem("seatMap") || "");
-  const localBookingList = localStorage.getItem("bookingList");
-  const bookedSeat: string[] = [];
-  let amountOfSeats = 0;
 
-  if (!seatMap) return;
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const seatMap: SeatMap = JSON.parse(
+        localStorage.getItem("seatMap") || ""
+      );
+      const localBookingList = localStorage.getItem("bookingList");
+      const bookedSeat: string[] = [];
+      let amountOfSeats = 0;
 
-  const bookingList: BookingList = localBookingList
-    ? JSON.parse(localBookingList)
-    : [];
+      if (!seatMap) return;
 
-  if (!name) {
-    alert("Name is needed to book");
-    return;
-  }
+      const bookingList: BookingList = localBookingList
+        ? JSON.parse(localBookingList)
+        : [];
 
-  const hasSelectedSeats = Object.values(seatMap).some((row) =>
-    row.includes("Selected")
-  );
+      if (!name) {
+        return reject(new Error("Name is needed to book"));
+      }
 
-  if (!hasSelectedSeats) {
-    alert("Select seats before booking");
-    return;
-  }
+      const hasSelectedSeats = Object.values(seatMap).some((row) =>
+        row.includes("Selected")
+      );
 
-  const updatedSeatMap = structuredClone(seatMap);
+      if (!hasSelectedSeats) {
+        return reject(new Error("Select seats before booking"));
+      }
 
-  for (const row in updatedSeatMap) {
-    updatedSeatMap[row] = updatedSeatMap[row].map((status, index) => {
-      if (status === "Selected") {
-        bookedSeat.push(row + (index + 1));
-        amountOfSeats++;
-        return "Booked";
-      } else return status;
-    });
-  }
-  bookingList.push({
-    name: name,
-    seatAmount: amountOfSeats,
-    seatNumber: bookedSeat.map((seat) => seat + ", "),
+      const updatedSeatMap = structuredClone(seatMap);
+
+      for (const row in updatedSeatMap) {
+        updatedSeatMap[row] = updatedSeatMap[row].map((status, index) => {
+          if (status === "Selected") {
+            bookedSeat.push(row + (index + 1));
+            amountOfSeats++;
+            return "Booked";
+          } else return status;
+        });
+      }
+      bookingList.push({
+        name: name,
+        seatAmount: amountOfSeats,
+        seatNumber: bookedSeat.map((seat) => seat + ", "),
+      });
+      localStorage.setItem("bookingList", JSON.stringify(bookingList));
+      localStorage.setItem("seatMap", JSON.stringify(updatedSeatMap));
+      resolve({ updatedSeatMap, bookingList });
+    }, 500);
   });
-  localStorage.setItem("bookingList", JSON.stringify(bookingList));
-  localStorage.setItem("seatMap", JSON.stringify(updatedSeatMap));
-  return { updatedSeatMap, bookingList };
 }
 
 export function generateSeatMap(): SeatMap {

@@ -1,5 +1,36 @@
 import type { BookingList, SeatMap, SeatStatus } from "./types";
 
+export function separateSelectSeat(
+  row: string,
+  seatIdx: number,
+  seatAmount: number,
+  setMessage: (newMessage: string) => void,
+  setSeatMap: (seatMap: SeatMap) => void
+) {
+  const seatMap: SeatMap = JSON.parse(localStorage.getItem("seatMap") || "");
+  if (!seatMap) return;
+  const updatedSeatMap = seatMap;
+
+  if (updatedSeatMap[row][seatIdx] === "Selected") {
+    updatedSeatMap[row][seatIdx] = "Available";
+    localStorage.setItem("seatMap", JSON.stringify(updatedSeatMap));
+    setSeatMap(updatedSeatMap);
+    return;
+  }
+
+  let selectSeatAmount = Object.values(seatMap).reduce((total, row) => {
+    return total + row.filter((status) => status === "Selected").length;
+  }, 0);
+
+  if (selectSeatAmount >= seatAmount) {
+    setMessage("Max amount selected, Please deselect one");
+    return;
+  }
+
+  updatedSeatMap[row][seatIdx] = "Selected";
+  localStorage.setItem("seatMap", JSON.stringify(updatedSeatMap));
+  setSeatMap(updatedSeatMap);
+}
 export function selectSeat(
   row: string,
   seatIdx: number,
@@ -10,10 +41,6 @@ export function selectSeat(
   const seatMap: SeatMap = JSON.parse(localStorage.getItem("seatMap") || "");
   if (!seatMap) return;
 
-  if (seatMap[row][seatIdx] === "Booked") {
-    setMessage("Cannot select booked seat!");
-    return;
-  }
   const updatedSeatMap = seatMap;
 
   if (seatIdx + seatAmount > updatedSeatMap[row].length) {
@@ -130,15 +157,17 @@ export function getSeatClass(
   index: number,
   seatAmount: number,
   hoveredRow: string | null,
-  hoveredSeat: number | null
+  hoveredSeat: number | null,
+  isSeparateBooking: boolean
 ): string {
   const baseClass = "size-3 sm:size-4 md:size-8 rounded-b-lg";
 
-  const hoverSeat =
-    row === hoveredRow &&
-    hoveredSeat !== null &&
-    index >= hoveredSeat &&
-    index < hoveredSeat + seatAmount;
+  const hoverSeat = isSeparateBooking
+    ? row === hoveredRow && hoveredSeat !== null && index === hoveredSeat
+    : row === hoveredRow &&
+      hoveredSeat !== null &&
+      index >= hoveredSeat &&
+      index < hoveredSeat + seatAmount;
 
   if (status === "Booked") return `${baseClass} bg-red-600 cursor-not-allowed`;
   if (status === "Selected")

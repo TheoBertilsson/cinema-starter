@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import Dialog from "~/components/dialog";
-import { bookSeats, generateSeatMap, getSeatClass, selectSeat } from "~/utils";
+import {
+  bookSeats,
+  generateSeatMap,
+  getSeatClass,
+  selectSeat,
+  separateSelectSeat,
+} from "~/utils";
 import type { BookingList, SeatMap } from "~/types";
 
 export default function BookingStart() {
@@ -10,6 +16,7 @@ export default function BookingStart() {
   const [seatAmount, setSeatAmount] = useState(1);
   const [hoveredRow, setHovoredRow] = useState<string | null>(null);
   const [hoveredSeat, setHovoredSeat] = useState<number | null>(null);
+  const [isSeparateBooking, setIsSeparateBooking] = useState(false);
   const [message, setMessage] = useState("");
   const ticketPrice =
     200 *
@@ -47,13 +54,23 @@ export default function BookingStart() {
                     key={index}
                     disabled={status === "Booked"}
                     onClick={() => {
-                      const updatedSeatMap = selectSeat(
-                        row,
-                        index,
-                        seatAmount,
-                        setMessage,
-                        setSeatMap
-                      );
+                      if (isSeparateBooking) {
+                        separateSelectSeat(
+                          row,
+                          index,
+                          seatAmount,
+                          setMessage,
+                          setSeatMap
+                        );
+                      } else {
+                        selectSeat(
+                          row,
+                          index,
+                          seatAmount,
+                          setMessage,
+                          setSeatMap
+                        );
+                      }
                     }}
                     onMouseEnter={() => {
                       setHovoredRow(row);
@@ -69,7 +86,8 @@ export default function BookingStart() {
                       index,
                       seatAmount,
                       hoveredRow,
-                      hoveredSeat
+                      hoveredSeat,
+                      isSeparateBooking
                     )}
                   ></button>
                 ))}
@@ -133,7 +151,19 @@ export default function BookingStart() {
                 Book Seats
               </button>
             </form>
-            <div className="min-w-1/4 flex justify-center items-center">
+            <div className="min-w-1/4 flex flex-col gap-2 justify-center items-center">
+              <div className="flex gap-2 ">
+                <label htmlFor="separateBooking">Separate booking</label>
+                <input
+                  type="checkbox"
+                  className={`${
+                    isSeparateBooking
+                      ? "bg-blue-400 hover:bg-blue-300"
+                      : "bg-gray-300 hover:bg-gray-400"
+                  } drop-shadow-sm drop-shadow-gray-400 active:drop-shadow-none px-2 py-1 rounded-lg`}
+                  onChange={() => setIsSeparateBooking(!isSeparateBooking)}
+                />
+              </div>
               <p className=" text-lg font-bold">{ticketPrice} SEK</p>
             </div>
           </div>

@@ -10,8 +10,17 @@ export function selectSeat(row: string, seatIdx: number, seatAmount: number) {
   }
   const updatedSeatMap = structuredClone(seatMap);
 
+  if (seatIdx + seatAmount > updatedSeatMap[row].length) {
+    alert("Not enough seats to the right!");
+    return;
+  }
+
   if (updatedSeatMap[row][seatIdx] === "Selected") {
-    updatedSeatMap[row][seatIdx] = "Available";
+    for (const r in updatedSeatMap) {
+      updatedSeatMap[r] = updatedSeatMap[r].map((status) =>
+        status === "Selected" ? "Available" : status
+      );
+    }
     localStorage.setItem("seatMap", JSON.stringify(updatedSeatMap));
     return updatedSeatMap;
   }
@@ -20,11 +29,6 @@ export function selectSeat(row: string, seatIdx: number, seatAmount: number) {
     updatedSeatMap[r] = updatedSeatMap[r].map((status) =>
       status === "Selected" ? "Available" : status
     );
-  }
-
-  if (seatIdx + seatAmount > updatedSeatMap[row].length) {
-    alert("Not enough seats to the right!");
-    return;
   }
 
   const group = updatedSeatMap[row].slice(seatIdx, seatIdx + seatAmount);
@@ -46,14 +50,14 @@ export function bookSeats(event: FormEvent, name: string) {
   event.preventDefault();
   const seatMap: SeatMap = JSON.parse(localStorage.getItem("seatMap") || "");
   const localBookingList = localStorage.getItem("bookingList");
+  const bookedSeat: string[] = [];
+  let amountOfSeats = 0;
 
   if (!seatMap) return;
 
   const bookingList: BookingList = localBookingList
     ? JSON.parse(localBookingList)
     : [];
-  const bookedSeat: string[] = [];
-  let amountOfSeats = 0;
 
   if (!name) {
     alert("Name is needed to book");

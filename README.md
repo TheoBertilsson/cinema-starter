@@ -1,39 +1,30 @@
-# Welcome to the cinema test application
+# 🎬 Cinema Booking App – Interview Assignment
 
-This repository is a starting point for our candidates to demonstrate their coding skills by implementating a cinema booking system.
+Hi! This is my solution to a technical interview challenge for a cinema seat booking application. The original project setup was provided by the interviewer and forked into this repository.
 
-## Out of the box features
+## 🧩 Challenge Overview
 
-This repository is created with `npx create-react-router@latest` and comes with the following features:
+The task was to build a simplified cinema booking experience where users can:
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- View available seats
+- Choose their seats
+- Confirm the booking
 
-## Getting Started
+The focus was on implementing core functionality with clean code, good structure, and a responsive UI.
 
-### Installation
+## ⚙️ Tech Stack
 
-Install the dependencies:
+This project uses:
+
+- **React**
+- **Tailwind CSS** for styling
+- **TypeScript** for type safety (if applicable)
+- **Mock Backend** with localStorage
+
+## 🚀 Getting Started
+
+To run the app locally:
 
 ```bash
 npm install
-```
-
-### Development
-
-Start the development server with HMR:
-
-```bash
 npm run dev
-```
-
-Your application will be available at `http://localhost:5173`.
-
-### Instructions
-
-Enter `http://localhost:5173` in your browser. You will find the instructions there.

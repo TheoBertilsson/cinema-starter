@@ -4,7 +4,8 @@ export function selectSeat(
   row: string,
   seatIdx: number,
   seatAmount: number,
-  setMessage: (newMessage: string) => void
+  setMessage: (newMessage: string) => void,
+  setSeatMap: (seatMap: SeatMap) => void
 ) {
   const seatMap: SeatMap = JSON.parse(localStorage.getItem("seatMap") || "");
   if (!seatMap) return;
@@ -48,7 +49,7 @@ export function selectSeat(
   }
 
   localStorage.setItem("seatMap", JSON.stringify(updatedSeatMap));
-  return updatedSeatMap;
+  setSeatMap(updatedSeatMap);
 }
 
 export async function bookSeats(

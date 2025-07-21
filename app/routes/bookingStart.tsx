@@ -51,9 +51,9 @@ export default function BookingStart() {
                         row,
                         index,
                         seatAmount,
-                        setMessage
+                        setMessage,
+                        setSeatMap
                       );
-                      if (updatedSeatMap) setSeatMap(updatedSeatMap);
                     }}
                     onMouseEnter={() => {
                       setHovoredRow(row);

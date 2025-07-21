@@ -1,17 +1,22 @@
 import type { FormEvent } from "react";
 import type { BookingList, SeatMap, SeatStatus } from "./types";
 
-export function selectSeat(row: string, seatIdx: number, seatAmount: number) {
+export function selectSeat(
+  row: string,
+  seatIdx: number,
+  seatAmount: number,
+  setMessage: (newMessage: string) => void
+) {
   const seatMap: SeatMap = JSON.parse(localStorage.getItem("seatMap") || "");
   if (!seatMap) return;
   if (seatMap[row][seatIdx] === "Booked") {
-    alert("Cannot select booked seat!");
+    setMessage("Cannot select booked seat!");
     return;
   }
   const updatedSeatMap = structuredClone(seatMap);
 
   if (seatIdx + seatAmount > updatedSeatMap[row].length) {
-    alert("Not enough seats to the right!");
+    setMessage("Not enough seats to the right!");
     return;
   }
 
@@ -34,7 +39,7 @@ export function selectSeat(row: string, seatIdx: number, seatAmount: number) {
   const group = updatedSeatMap[row].slice(seatIdx, seatIdx + seatAmount);
   const hasBooked = group.some((status) => status === "Booked");
   if (hasBooked) {
-    alert("One or more seats in the group are already booked!");
+    setMessage("One or more seats in the group are already booked!");
     return;
   }
 
@@ -57,11 +62,12 @@ export async function bookSeats(
       const seatMap: SeatMap = JSON.parse(
         localStorage.getItem("seatMap") || ""
       );
+      if (!seatMap)
+        return reject(new Error("Something went wrong. Try again!"));
+
       const localBookingList = localStorage.getItem("bookingList");
       const bookedSeat: string[] = [];
       let amountOfSeats = 0;
-
-      if (!seatMap) return;
 
       const bookingList: BookingList = localBookingList
         ? JSON.parse(localBookingList)

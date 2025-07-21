@@ -69,7 +69,7 @@ export default function BookingStart() {
               </div>
             </div>
           ))}
-          <div className="flex gap-4 md:flex-row justify-evenly w-full flex-col p-4">
+          <div className="flex gap-4 md:flex-row justify-evenly md:w-full flex-col p-4">
             <div className="min-w-1/4 hidden md:block"></div>
             <form
               onSubmit={async (e) => {
@@ -78,6 +78,7 @@ export default function BookingStart() {
                   setSeatMap(result.updatedSeatMap);
                   setBookingList(result.bookingList);
                   alert("Booking successful!");
+                  window.location.reload();
                 } catch (error: any) {
                   alert(error.message);
                 }

@@ -128,7 +128,7 @@ export function getSeatClass(
   hoveredRow: string | null,
   hoveredSeat: number | null
 ): string {
-  const baseClass = "size-3 md:size-8 rounded-b-lg";
+  const baseClass = "size-3 sm:size-4 md:size-8 rounded-b-lg";
 
   const hoverSeat =
     row === hoveredRow &&

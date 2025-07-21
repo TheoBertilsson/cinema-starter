@@ -126,18 +126,20 @@ export default function BookingStart() {
             </div>
           </div>
         </article>
-        <section className="flex flex-col md:flex-row p-5 border-2 rounded-lg border-gray-500 gap-4 max-w-[37.5rem]  overflow-auto">
-          {bookingList?.map((booking, index) => (
-            <div
-              className=" flex flex-col gap-2 border-b md:border-r md:border-b-0 border-gray-600 p-5 min-w-[14rem] min-h-[7rem]"
-              key={index}
-            >
-              <p>Name:{booking.name}</p>
-              <p>Amount of tickets: {booking.seatAmount}</p>
-              <p>Seats: {booking.seatNumber.map((seat) => seat)}</p>
-            </div>
-          ))}
-        </section>
+        {bookingList && bookingList.length > 0 && (
+          <section className="flex flex-col md:flex-row p-5 border-2 rounded-lg border-gray-500 gap-4 max-w-[37.5rem]  overflow-auto">
+            {bookingList?.map((booking, index) => (
+              <div
+                className=" flex flex-col gap-2 border-b md:border-r md:border-b-0 border-gray-600 p-5 min-w-[14rem] min-h-[7rem]"
+                key={index}
+              >
+                <p>Name:{booking.name}</p>
+                <p>Amount of tickets: {booking.seatAmount}</p>
+                <p>Seats: {booking.seatNumber.map((seat) => seat)}</p>
+              </div>
+            ))}
+          </section>
+        )}
       </main>
     </>
   );

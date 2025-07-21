@@ -1,4 +1,3 @@
-import type { FormEvent } from "react";
 import type { BookingList, SeatMap, SeatStatus } from "./types";
 
 export function selectSeat(
@@ -9,11 +8,12 @@ export function selectSeat(
 ) {
   const seatMap: SeatMap = JSON.parse(localStorage.getItem("seatMap") || "");
   if (!seatMap) return;
+
   if (seatMap[row][seatIdx] === "Booked") {
     setMessage("Cannot select booked seat!");
     return;
   }
-  const updatedSeatMap = structuredClone(seatMap);
+  const updatedSeatMap = seatMap;
 
   if (seatIdx + seatAmount > updatedSeatMap[row].length) {
     setMessage("Not enough seats to the right!");
@@ -82,7 +82,7 @@ export async function bookSeats(
         return reject(new Error("Select seats before booking"));
       }
 
-      const updatedSeatMap = structuredClone(seatMap);
+      const updatedSeatMap = seatMap;
 
       for (const row in updatedSeatMap) {
         updatedSeatMap[row] = updatedSeatMap[row].map((status, index) => {

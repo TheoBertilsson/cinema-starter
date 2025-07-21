@@ -138,7 +138,7 @@ export default function BookingStart() {
             </div>
           </div>
         </article>
-        {bookingList && bookingList.length > 0 && (
+        {bookingList && (
           <section className="flex flex-col md:flex-row p-5 border-2 rounded-lg border-gray-500 gap-4 max-w-[37.5rem]  overflow-auto">
             {bookingList?.map((booking, index) => (
               <div

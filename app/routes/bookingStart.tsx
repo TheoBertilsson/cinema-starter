@@ -104,8 +104,9 @@ export default function BookingStart() {
             </div>
             <form
               onSubmit={async (e) => {
+                e.preventDefault();
                 try {
-                  const result = await bookSeats(e, bookingName);
+                  const result = await bookSeats(bookingName);
                   setSeatMap(result.updatedSeatMap);
                   setBookingList(result.bookingList);
                   setMessage("Booking successful!");

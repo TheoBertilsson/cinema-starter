@@ -52,11 +52,8 @@ export function selectSeat(
 }
 
 export async function bookSeats(
-  event: FormEvent,
   name: string
 ): Promise<{ updatedSeatMap: SeatMap; bookingList: BookingList }> {
-  event.preventDefault();
-
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       const seatMap: SeatMap = JSON.parse(

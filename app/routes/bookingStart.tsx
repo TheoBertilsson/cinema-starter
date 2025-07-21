@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Dialog from "~/components/dialog";
 import {
   bookSeats,
   generateSeatMap,
@@ -14,6 +15,8 @@ export default function BookingStart() {
   const [seatAmount, setSeatAmount] = useState(1);
   const [hoveredRow, setHovoredRow] = useState<string | null>(null);
   const [hoveredSeat, setHovoredSeat] = useState<number | null>(null);
+  const [message, setMessage] = useState("");
+  const ticketPrice = 200;
 
   useEffect(() => {
     const savedSeatMap = localStorage.getItem("seatMap");
@@ -45,7 +48,12 @@ export default function BookingStart() {
                     key={index}
                     disabled={status === "Booked"}
                     onClick={() => {
-                      const updatedSeatMap = selectSeat(row, index, seatAmount);
+                      const updatedSeatMap = selectSeat(
+                        row,
+                        index,
+                        seatAmount,
+                        setMessage
+                      );
                       if (updatedSeatMap) setSeatMap(updatedSeatMap);
                     }}
                     onMouseEnter={() => {
@@ -69,40 +77,8 @@ export default function BookingStart() {
               </div>
             </div>
           ))}
-          <div className="flex gap-4 md:flex-row justify-evenly md:w-full flex-col p-4">
-            <div className="min-w-1/4 hidden md:block"></div>
-            <form
-              onSubmit={async (e) => {
-                try {
-                  const result = await bookSeats(e, bookingName);
-                  setSeatMap(result.updatedSeatMap);
-                  setBookingList(result.bookingList);
-                  alert("Booking successful!");
-                  window.location.reload();
-                } catch (error: any) {
-                  alert(error.message);
-                }
-              }}
-              className="flex flex-col gap-2 md:min-w-1/4"
-            >
-              <input
-                type="text"
-                placeholder="Name"
-                name="bookingName"
-                value={bookingName}
-                onChange={(event) => {
-                  setBookingName(event.target.value);
-                }}
-                className="border border-gray-400 p-2 rounded-lg"
-              />
-              <button
-                className="bg-blue-400 w-full font-bold text-xl text-white p-2 rounded-lg hover:bg-blue-300"
-                type="submit"
-              >
-                Book Seats
-              </button>
-            </form>
-            <div className="flex flex-col gap-2 justify-center items-center min-w-1/4">
+          <div className="flex gap-4 md:flex-row justify-evenly items-center md:w-full flex-col p-4">
+            <div className="flex flex-col gap-2 justify-center items-center min-w-1/4 font-bold">
               <p>Tickets:</p>
 
               <div className="flex bg-gray-200 rounded-2xl gap-4 justify-between items-center h-8 w-fit">
@@ -127,6 +103,41 @@ export default function BookingStart() {
                 </button>
               </div>
             </div>
+            <form
+              onSubmit={async (e) => {
+                try {
+                  const result = await bookSeats(e, bookingName);
+                  setSeatMap(result.updatedSeatMap);
+                  setBookingList(result.bookingList);
+                  setMessage("Booking successful!");
+                } catch (error: any) {
+                  setMessage(error.message);
+                }
+              }}
+              className="flex flex-col gap-2 md:min-w-1/4"
+            >
+              <input
+                type="text"
+                placeholder="Name"
+                name="bookingName"
+                value={bookingName}
+                onChange={(event) => {
+                  setBookingName(event.target.value);
+                }}
+                className="border border-gray-400 p-2 rounded-lg"
+              />
+              <button
+                className="bg-blue-400 w-full font-bold text-xl text-white p-2 rounded-lg hover:bg-blue-300 cursor-pointer"
+                type="submit"
+              >
+                Book Seats
+              </button>
+            </form>
+            <div className="min-w-1/4 flex justify-center items-center">
+              <p className=" text-lg font-bold">
+                {ticketPrice * seatAmount} SEK
+              </p>
+            </div>
           </div>
         </article>
         {bookingList && bookingList.length > 0 && (
@@ -143,6 +154,7 @@ export default function BookingStart() {
             ))}
           </section>
         )}
+        {message && <Dialog message={message} setMessage={setMessage} />}
       </main>
     </>
   );

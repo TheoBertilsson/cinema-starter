@@ -1,5 +1,23 @@
 import type { BookingList, SeatMap, SeatStatus } from "./types";
 
+export function generateSeatMap(): SeatMap {
+  const seatMap: SeatMap = {};
+  const rows = ["A", "B", "C", "D", "E", "F", "G", "H"];
+  const longRows = ["B", "E", "G"];
+
+  for (let i = 0; i < rows.length; i++) {
+    const seatCount = longRows.includes(rows[i]) ? 14 : 12;
+
+    const seats: SeatStatus[] = Array.from(
+      { length: seatCount },
+      () => "Available"
+    );
+    seatMap[rows[i]] = seats;
+  }
+
+  return seatMap;
+}
+
 export function separateSelectSeat(
   row: string,
   seatIdx: number,
@@ -132,24 +150,6 @@ export async function bookSeats(
       resolve({ updatedSeatMap, bookingList });
     }, 500);
   });
-}
-
-export function generateSeatMap(): SeatMap {
-  const seatMap: SeatMap = {};
-  const rows = ["A", "B", "C", "D", "E", "F", "G", "H"];
-  const longRows = ["B", "E", "G"];
-
-  for (let i = 0; i < rows.length; i++) {
-    const seatCount = longRows.includes(rows[i]) ? 14 : 12;
-
-    const seats: SeatStatus[] = Array.from(
-      { length: seatCount },
-      () => "Available"
-    );
-    seatMap[rows[i]] = seats;
-  }
-
-  return seatMap;
 }
 
 export function getSeatClass(

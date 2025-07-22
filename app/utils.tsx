@@ -55,7 +55,8 @@ export function selectSeat(
       );
     }
     localStorage.setItem("seatMap", JSON.stringify(updatedSeatMap));
-    return updatedSeatMap;
+    setSeatMap(updatedSeatMap);
+    return;
   }
 
   for (const r in updatedSeatMap) {
